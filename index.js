@@ -44,11 +44,33 @@ app.get('/vision', (req, res) => {
   res.render('index-debug.pug')
 })
 
+// app.post('/vision', upload.single('imagefile'), (req, res) => {
+//   kakaoVision(req.file.buffer)
+//     .then(result => {
+//       res.send(result)
+//     })
+// })
+
 app.post('/vision', upload.single('imagefile'), (req, res) => {
-  kakaoVision(req.file.buffer)
-    .then(result => {
-      res.send(result)
-    })
+  const fileimage = req.file.buffer
+  res.send(fileimage)
+  // axios({
+  //     method: 'post',
+  //     url: 'https://kapi.kakao.com/v1/vision/face/detect',
+  //     headers: {
+  //       'Authorization': 'KakaoAK c0dd2a976ce1c9a95087cf565216ba43'
+  //     },
+  //     data: {
+  //       file: fileimage
+  //     },
+  //     responseType: 'arraybuffer'
+  //   })
+  //   .then(response => {
+  //     res.send(response)
+  //   })
+  //   .catch(error => {
+  //     console.log(error)
+  //   })
 })
 
 app.listen(5000, () => {
