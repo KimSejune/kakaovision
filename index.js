@@ -1,8 +1,9 @@
 const express = require('express')
-const axios = require('axios')
-const fileType = require('file-type')
+//const axios = require('axios')
+const request = require("request");
 const multer = require('multer')
 const cors = require('cors')
+
 const app = express()
 
 const upload = multer({
@@ -12,29 +13,30 @@ const upload = multer({
 app.set('view engine', 'pug')
 app.use(cors())
 
-function kakaoVision(fileBuffer) {
+function kakaoVision(file) {
   return new Promise((resolve, reject) => {
-    axios({
-      method: 'post',
-      url: 'https://kapi.kakao.com/v1/vision/face/detect',
-      data: {
-        file: `${fileBuffer}`
-      },
+    request.post({
+      url:'https://kapi.kakao.com/v1/vision/face/detect',
       headers: {
-        'Authorization': 'KakaoAK cd05963448d0dcac73dfbe01e690b3da',
-        'Content-Type': 'multipart/form-data'
+        'authorization': 'KakaoAK cd05963448d0dcac73dfbe01e690b3da',
+        'content-type': 'multipart/form-data'
+       },
+      formData: { 
+        file: {
+          value: file.buffer,
+          options: {
+            filename: file.originalname,
+          }
+        }
+      },
+    },(err, httpResponse, body) => {
+      if (err) {
+        reject(err);
       }
-    }).then(response => {
-      resolve(response)
-    }).catch(error => {
-      reject(error)
-    })
-  })
-
+      resolve(body);
+    });
+  });
 }
-
-
-
 
 app.get('/', (req, res) => {
   res.render('index.pug')
@@ -45,9 +47,13 @@ app.get('/vision', (req, res) => {
 })
 
 app.post('/vision', upload.single('imagefile'), (req, res) => {
-  kakaoVision(req.file.buffer)
+  kakaoVision(req.file)
     .then(result => {
-      res.send(result)
+      //console.log(result, '<< [ result ]');
+      res.send(result);
+    })
+    .catch(err => {
+      console.log(err, '<< [ err ]');
     })
 })
 
