@@ -1,5 +1,4 @@
 const express = require('express')
-//const axios = require('axios')
 const request = require("request");
 const multer = require('multer')
 const cors = require('cors')
@@ -49,14 +48,13 @@ app.get('/vision', (req, res) => {
 app.post('/vision', upload.single('imagefile'), (req, res) => {
   kakaoVision(req.file)
     .then(result => {
-      //console.log(result, '<< [ result ]');
       res.send(result);
     })
     .catch(err => {
       console.log(err, '<< [ err ]');
     })
 })
-
+// test
 app.listen(5000, () => {
   console.log('connect!!')
 })
