@@ -12,7 +12,7 @@ const upload = multer({
 
 app.set('view engine', 'pug')
 app.use(cors())
-// test2
+
 function kakaoVision(file) {
   return new Promise((resolve, reject) => {
     request.post({
